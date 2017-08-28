@@ -67,9 +67,9 @@
   $(document).ready(function () {
     loadItemsFromChromeStorage({
       url: '',
-      saveCollapsedDiffs: true,
+      saveCollapsedDiffs: false,
       tabSwitchingEnabled: false,
-      autoCollapseExpressions: []
+      autoCollapseExpressions: ['^(?!.*(cs|xml)$).*$']
       // Add new items here to get them loaded and their values put in the form.
     }, setFormValues);
 
