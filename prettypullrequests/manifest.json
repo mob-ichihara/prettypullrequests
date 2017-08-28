@@ -1,9 +1,12 @@
 {
     "manifest_version": 2,
 
+    "homepage_url": "https://github.com/mob-sakai/prettypullrequests",
+    "update_url": "https://github.com/mob-sakai/prettypullrequests/raw/master/updates.xml",
+
     "name": "Pretty Pull Requests (Github)",
     "description": "This extension applies various tweaks to the github pull-request code review pages.",
-    "version": "2.10.4",
+    "version": "2.11.0",
     "icons": {
         "32": "ppr-logo/32x32.png",
         "64": "ppr-logo/64x64.png",
