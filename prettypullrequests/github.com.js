@@ -8,17 +8,12 @@ var repositoryAuthor;
 var autoCollapseExpressions;
 
 function htmlIsInjected() {
-  return $('.pretty-pull-requests-inserted').length > 0;
+  return $('.file-info').length === $('.file-info.pretty').length;
 }
 
 function injectHtml() {
-  $('<span class="pretty-pull-requests collapse-lines">' +
-        '<label><input type="checkbox" class="js-collapse-additions" checked="yes">+</label>' +
-        '<label><input type="checkbox" class="js-collapse-deletions" checked="yes">-</label>' +
-    '</span>').insertAfter('.actions, .file-actions');
-
-  $('<div class="pretty-pull-requests bottom-collapse">Click to Collapse</div>').insertAfter('.data.highlight.blob-wrapper');
-  $('<div class="pretty-pull-requests-inserted" style="display: none"></div>').appendTo('body');
+  $('.file-info:not(.pretty) .link-gray-dark').on('click', clickTitle); 
+  $('.file-info').addClass("pretty");
 }
 
 function collapseAdditions() {
@@ -173,10 +168,6 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
                 collectUniquePageInfo();
                 injectHtml();
                 initDiffs();
-                $body.on('click', '.file-info .link-gray-dark', clickTitle);
-                $body.on('click', '.bottom-collapse', clickCollapse);
-                $body.on('click', '.js-collapse-additions', collapseAdditions);
-                $body.on('click', '.js-collapse-deletions', collapseDeletions);
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
