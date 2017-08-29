@@ -83,16 +83,15 @@ function toggleDiff(id, duration, display) {
 
     if ($a) {
         var $span = $a.next('div[id^=diff-]');
-        var $data = $span.children('.js-file-content');
         switch (display) {
             case 'toggle':
-                $data.toggle(duration);
+                $span.toggleClass('open Details--on');
                 return true;
             case 'expand':
-                $data.slideDown(duration);
+                $span.removeClass('open Details--on');
                 return useLocalStorage ? localStorage.removeItem(uniquify(id)) : true;
             default:
-                $data.slideUp(duration);
+                $span.addClass('open Details--on');
                 return useLocalStorage ? localStorage.setItem(uniquify(id), display) : true;
         }
     }
