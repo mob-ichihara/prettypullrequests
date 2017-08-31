@@ -6,13 +6,30 @@ var commitHash;
 var repositoryName;
 var repositoryAuthor;
 var autoCollapseExpressions;
+var isInitialized;
 
-function htmlIsInjected() {
-  return $('.file-info').length === $('.file-info.pretty').length;
+function needInitialize() {
+  var filesChangedTab = document.querySelector('nav.tabnav-tabs > a.tabnav-tab:last-child');
+  if (filesChangedTab) {
+    // "Files changed" tab didn't have "selected" class.
+    if (!filesChangedTab.classList.contains('selected')) {
+      isInitialized = false
+      return false;
+    }
+
+    // "Files changed" tab was initialized already.
+    if (isInitialized) return false
+
+    isInitialized = true
+    return true;
+  }
+  // Not found "Files changed" tab.
+  isInitialized = false;
+  return false;
 }
 
 function injectHtml() {
-  $('.file-info:not(.pretty) .link-gray-dark').on('click', clickTitle); 
+  $('.file-info:not(.pretty) .link-gray-dark').on('click', clickTitle);
   $('.file-info').addClass("pretty");
 }
 
@@ -163,13 +180,22 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled:
         autoCollapseExpressions = items.autoCollapseExpressions;
 
         var injectHtmlIfNecessary = function () {
-            if (!htmlIsInjected()) {
+            if (needInitialize()) {
                 collectUniquePageInfo();
                 injectHtml();
                 initDiffs();
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
+
+        chrome.storage.onChanged.addListener(changes => {
+          for(let key in changes) {
+            items[key] = changes[key].newValue;
+          }
+          autoCollapseExpressions = items.autoCollapseExpressions;
+          useLocalStorage = items.saveCollapsedDiffs;
+        });
+
         var $body = $('body');
         useLocalStorage = items.saveCollapsedDiffs;
 
