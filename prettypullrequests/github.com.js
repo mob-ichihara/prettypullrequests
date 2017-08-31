@@ -185,6 +185,7 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: false, tabSwitchingEnabled
                 collectUniquePageInfo();
                 injectHtml();
                 initDiffs();
+                extendUI();
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
@@ -252,3 +253,74 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: false, tabSwitchingEnabled
         });
     }
 });
+
+function createButton(text) {
+  let button = document.createElement('button');
+  button.classList.add("btn");
+  button.classList.add("btn-sm");
+  if (text) button.innerText = text;
+  return button;
+}
+
+function extendUI() {
+  let prReviewTools = document.querySelector('div.float-right.pr-review-tools');
+  let hideCollapsed = document.getElementById('ppr-hideColapsed');
+  let allControlTools = document.getElementById('ppr-allControlTools')
+
+  // Toggle hide collapsed files.
+  if (!hideCollapsed) {
+    hideCollapsed = document.createElement('div');
+    hideCollapsed.id = 'ppr-hideColapsed';
+    prReviewTools.insertBefore(hideCollapsed, prReviewTools.firstElementChild);
+  } else {
+    while(hideCollapsed.firstElementChild)
+      hideCollapsed.removeChild(hideCollapsed.firstElementChild);
+  }
+  hideCollapsed.classList.add('diffbar-item');
+  var toggleButton = document.createElement('button');
+  toggleButton.classList.add('ppr-toggle');
+  toggleButton.innerText = 'Hide collapsed';
+  toggleButton.addEventListener('click', function() {
+    if (this.classList.contains('selected')) {
+      this.classList.remove('selected');
+      document.querySelectorAll('div.file.js-file.js-details-container').forEach(e => {
+        e.classList.remove('ppr-hidden');
+      });
+    } else {
+      this.classList.add('selected');
+      document.querySelectorAll('div.file.js-file.js-details-container').forEach(e => {
+        e.classList.add('ppr-hidden');
+      });
+    }
+  });
+  hideCollapsed.appendChild(toggleButton);
+
+  // Expand or Collapse all files.
+  if (!allControlTools) {
+    allControlTools = document.createElement('div');
+    allControlTools.id = 'ppr-allControlTools';
+    prReviewTools.insertBefore(allControlTools, prReviewTools.firstElementChild);
+  } else {
+    while(allControlTools.firstElementChild)
+      allControlTools.removeChild(allControlTools.firstElementChild);
+  }
+  allControlTools.classList.add('diffbar-item');
+
+  var expandAllButton = createButton('Expand all');
+  expandAllButton.style.marginRight = '10px';
+  expandAllButton.addEventListener('click', () => {
+    document.querySelectorAll('div.file.js-file.js-details-container').forEach(e => {
+      e.classList.remove('open');
+      e.classList.remove('Details--on');
+    });
+  });
+  allControlTools.appendChild(expandAllButton);
+  var collapseAllButton = createButton('Collapse all');
+  collapseAllButton.addEventListener('click', () => {
+    document.querySelectorAll('div.file.js-file.js-details-container').forEach(e => {
+      e.classList.add('open');
+      e.classList.add('Details--on');
+    });
+  });
+  allControlTools.appendChild(collapseAllButton);
+}
