@@ -7,6 +7,7 @@ var repositoryName;
 var repositoryAuthor;
 var autoCollapseExpressions;
 var isInitialized;
+var initialAutoCollapseExpressions = '^(?!.*(cs|xml)$).*$';
 
 function needInitialize() {
   var filesChangedTab = document.querySelector('nav.tabnav-tabs > a.tabnav-tab:last-child');
@@ -173,7 +174,7 @@ function autoCollapse() {
     });
 }
 
-chrome.storage.sync.get({url: '', saveCollapsedDiffs: false, tabSwitchingEnabled: false, autoCollapseExpressions: []}, function(items) {
+chrome.storage.sync.get({url: '', saveCollapsedDiffs: false, tabSwitchingEnabled: false, autoCollapseExpressions: [initialAutoCollapseExpressions]}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
 

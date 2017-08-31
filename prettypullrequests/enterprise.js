@@ -6,6 +6,7 @@ var commitHash;
 var repositoryName;
 var repositoryAuthor;
 var autoCollapseExpressions;
+var initialAutoCollapseExpressions = '^(?!.*(cs|xml)$).*$';
 
 function onFilesPage() {
     return window.location.href.indexOf('files') !== -1;
@@ -174,7 +175,7 @@ function autoCollapse() {
     });
 }
 
-chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false, autoCollapseExpressions: []}, function(items) {
+chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false, autoCollapseExpressions: [initialAutoCollapseExpressions]}, function(items) {
     if (items.url === window.location.origin ||
         "https://github.com" === window.location.origin) {
 

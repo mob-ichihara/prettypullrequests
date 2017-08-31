@@ -1,3 +1,5 @@
+var initialAutoCollapseExpressions = '^(?!.*(cs|xml)$).*$';
+
 ;(function ($) {
   'use strict';
 
@@ -69,7 +71,7 @@
       url: '',
       saveCollapsedDiffs: false,
       tabSwitchingEnabled: false,
-      autoCollapseExpressions: ['^(?!.*(cs|xml)$).*$']
+      autoCollapseExpressions: [initialAutoCollapseExpressions]
       // Add new items here to get them loaded and their values put in the form.
     }, setFormValues);
 
