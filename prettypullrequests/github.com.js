@@ -173,7 +173,7 @@ function autoCollapse() {
     });
 }
 
-chrome.storage.sync.get({url: '', saveCollapsedDiffs: true, tabSwitchingEnabled: false, autoCollapseExpressions: []}, function(items) {
+chrome.storage.sync.get({url: '', saveCollapsedDiffs: false, tabSwitchingEnabled: false, autoCollapseExpressions: []}, function(items) {
     if (items.url == window.location.origin ||
         "https://github.com" === window.location.origin) {
 
