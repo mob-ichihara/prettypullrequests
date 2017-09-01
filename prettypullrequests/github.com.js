@@ -279,20 +279,29 @@ function extendUI() {
   hideCollapsed.classList.add('diffbar-item');
   var toggleButton = document.createElement('button');
   toggleButton.classList.add('ppr-toggle');
+  toggleButton.classList.add('tooltipped');
+  toggleButton.classList.add('tooltipped-s');
   toggleButton.innerText = 'Hide collapsed';
+  toggleButton.setAttribute('aria-label', 'Hide collapsed files');
   toggleButton.addEventListener('click', function() {
+    let targets = document.querySelectorAll('div.file.js-file.js-details-container');
     if (this.classList.contains('selected')) {
       this.classList.remove('selected');
-      document.querySelectorAll('div.file.js-file.js-details-container').forEach(e => {
+      targets.forEach(e => {
         e.classList.remove('ppr-hidden');
       });
+      this.setAttribute('aria-label', 'Hide collapsed files');
     } else {
       this.classList.add('selected');
-      document.querySelectorAll('div.file.js-file.js-details-container').forEach(e => {
+      let hiddenFilesNum = 0;
+      targets.forEach(e => {
         e.classList.add('ppr-hidden');
+        if (e.classList.contains('open') && e.classList.contains('Details--on')) hiddenFilesNum++;
       });
+      this.setAttribute('aria-label', hiddenFilesNum + ' hidden files');
     }
   });
+  toggleButton.addEventListener('mouseout', toggleButton.blur);
   hideCollapsed.appendChild(toggleButton);
 
   // Expand or Collapse all files.
@@ -306,21 +315,35 @@ function extendUI() {
   }
   allControlTools.classList.add('diffbar-item');
 
-  var expandAllButton = createButton('Expand all');
+  var expandAllButton = createButton('＋');
   expandAllButton.style.marginRight = '10px';
+  expandAllButton.classList.add('tooltipped');
+  expandAllButton.classList.add('tooltipped-s');
+  expandAllButton.setAttribute('aria-label', 'Expand all files');
   expandAllButton.addEventListener('click', () => {
     document.querySelectorAll('div.file.js-file.js-details-container').forEach(e => {
       e.classList.remove('open');
       e.classList.remove('Details--on');
     });
+    if (toggleButton.classList.contains('selected'))
+      toggleButton.setAttribute('aria-label', '0 hidden files');
   });
+  expandAllButton.addEventListener('mouseout', expandAllButton.blur);
   allControlTools.appendChild(expandAllButton);
-  var collapseAllButton = createButton('Collapse all');
+  var collapseAllButton = createButton('－');
+  collapseAllButton.classList.add('tooltipped');
+  collapseAllButton.classList.add('tooltipped-s');
+  collapseAllButton.setAttribute('aria-label', 'Collapse all files');
   collapseAllButton.addEventListener('click', () => {
+    let hiddenFilesNum = 0;
     document.querySelectorAll('div.file.js-file.js-details-container').forEach(e => {
       e.classList.add('open');
       e.classList.add('Details--on');
+      hiddenFilesNum++;
     });
+    if (toggleButton.classList.contains('selected'))
+      toggleButton.setAttribute('aria-label', hiddenFilesNum + ' hidden files');
   });
+  collapseAllButton.addEventListener('mouseout', collapseAllButton.blur);
   allControlTools.appendChild(collapseAllButton);
 }
