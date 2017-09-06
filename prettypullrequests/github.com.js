@@ -6,26 +6,18 @@ var commitHash;
 var repositoryName;
 var repositoryAuthor;
 var autoCollapseExpressions;
-var isInitialized;
 var initialAutoCollapseExpressions = '^(?!.*(cs|xml)$).*$';
 
 function needInitialize() {
   var filesChangedTab = document.querySelector('nav.tabnav-tabs > a.tabnav-tab:last-child');
   if (filesChangedTab) {
     // "Files changed" tab didn't have "selected" class.
-    if (!filesChangedTab.classList.contains('selected')) {
-      isInitialized = false
+    if (!filesChangedTab.classList.contains('selected'))
       return false;
-    }
 
-    // "Files changed" tab was initialized already.
-    if (isInitialized) return false
-
-    isInitialized = true
-    return true;
+    return $('.file-info').length !== $('.file-info.pretty').length;
   }
   // Not found "Files changed" tab.
-  isInitialized = false;
   return false;
 }
 
@@ -185,7 +177,6 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: false, tabSwitchingEnabled
                 collectUniquePageInfo();
                 injectHtml();
                 initDiffs();
-                extendUI();
             }
             setTimeout(injectHtmlIfNecessary, 1000);
         };
@@ -253,6 +244,8 @@ chrome.storage.sync.get({url: '', saveCollapsedDiffs: false, tabSwitchingEnabled
         });
     }
 });
+window.addEventListener('load', extendUI);
+document.addEventListener('pjax:end', extendUI);
 
 function createButton(text) {
   let button = document.createElement('button');
@@ -264,6 +257,8 @@ function createButton(text) {
 
 function extendUI() {
   let prReviewTools = document.querySelector('div.float-right.pr-review-tools');
+  if (!prReviewTools) return;
+
   let hideCollapsed = document.getElementById('ppr-hideColapsed');
   let allControlTools = document.getElementById('ppr-allControlTools')
 
